@@ -1,0 +1,33 @@
+name: Fronted CI/CD
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - name: Install dependencies for frontend
+        run: |
+          npm install
+      - name: Generate build
+        run: |
+          npm run build
+
+      - name: Deploy to gh pages
+        run: |
+          npx angular-cli-ghpages --dir=dist/social-network
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GH_TOKEN_SECRET }}
+
